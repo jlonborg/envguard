@@ -1,0 +1,11 @@
+{
+  "summary": {
+    "en-US": "Visually flags whether a site is dev or production so you never mix them up."
+  },
+  "categories": [
+    "web-development"
+  ],
+  "version": {
+    "license": "MIT"
+  }
+}

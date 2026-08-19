@@ -1,0 +1,47 @@
+body {
+  width: 420px;
+  font-family: sans-serif;
+  font-size: 13px;
+  padding: 8px;
+}
+
+h1 {
+  font-size: 15px;
+  margin: 0 0 8px 0;
+}
+
+.status-message {
+  color: #cc0000;
+  margin: 6px 0;
+}
+
+#manual-add {
+  display: flex;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+#manual-hostname {
+  flex: 1;
+  min-width: 0;
+}
+
+#site-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+#site-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid #eee;
+}
+
+#site-list li span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

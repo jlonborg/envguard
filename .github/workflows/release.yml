@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npx web-ext lint --source-dir=.
+
+      - name: Build
+        run: npx web-ext build --source-dir=. --artifacts-dir=web-ext-artifacts
+
+      # AMO does not allow the same version number to be submitted twice for
+      # an add-on, even across channels, so there is only one channel here:
+      # `listed` (the public AMO store). amo-metadata.json supplies the
+      # summary/category/license required for the very first submission;
+      # web-ext creates the listing automatically if it doesn't exist yet.
+      - name: Sign and submit to AMO (listed, public store)
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+        run: |
+          npx web-ext sign \
+            --source-dir=. \
+            --artifacts-dir=web-ext-artifacts \
+            --channel=listed \
+            --amo-metadata=amo-metadata.json \
+            --timeout=1800000 \
+            --api-key="$WEB_EXT_API_KEY" \
+            --api-secret="$WEB_EXT_API_SECRET"
+
+      - name: Find signed xpi
+        id: find_xpi
+        run: |
+          XPI_PATH=$(find web-ext-artifacts -name "*.xpi" | head -n 1)
+          echo "xpi_path=$XPI_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: ${{ steps.find_xpi.outputs.xpi_path }}
+          generate_release_notes: true
