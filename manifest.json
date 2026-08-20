@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "EnvGuard",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Visually flags whether a site is dev or production so you never mix them up.",
   "icons": {
     "16": "icons/icon.svg",
